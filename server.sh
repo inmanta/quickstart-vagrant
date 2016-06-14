@@ -17,7 +17,7 @@ enabled=1
 gpgcheck=0
 EOF
 
-dnf install -y python3-inmanta-server inmanta-dashboard python3-greenlet python3-pymongo-gridfs mongodb-server
+dnf install -y python3-inmanta-server inmanta-dashboard python3-greenlet python3-pymongo-gridfs mongodb-server python3-blessings
 
 echo "smallfiles = true" >>/etc/mongod.conf 
 systemctl start mongod
@@ -37,7 +37,7 @@ heartbeat-interval = 30
 [server]
 
 auto-recompile-wait = 10
-
+agent_autostart = *
 
 [dashboard]
 # Host the dashboard from within the server. The server does not (yet) override the config.js file
@@ -50,3 +50,13 @@ EOF
 
 systemctl start inmanta-server
 systemctl enable inmanta-server
+
+echo "192.168.33.101 vm1" >> /etc/hosts
+echo "192.168.33.102 vm2" >> /etc/hosts
+
+
+cp /vagrant/vagrant-master /root/.ssh/id_rsa
+cp /vagrant/vagrant-master /var/lib/inmanta/.ssh/id_rsa
+chown inmanta /var/lib/inmanta/.ssh/id_rsa
+sudo -u inmanta sh -c "ssh-keyscan -H vm1 >> ~/.ssh/known_hosts"
+
