@@ -2,15 +2,16 @@
 
 #setup repos
 cat > /etc/yum.repos.d/inmanta.repo <<EOF
-[inmanta-master]
-baseurl=https://packages.inmanta.com/rpms/inmanta/master/fedora/
+[bartvanbrabant-inmanta]
+name=Copr repo for inmanta owned by bartvanbrabant
+baseurl=https://copr-be.cloud.fedoraproject.org/results/bartvanbrabant/inmanta/fedora-\$releasever-\$basearch/
+type=rpm-md
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://copr-be.cloud.fedoraproject.org/results/bartvanbrabant/inmanta/pubkey.gpg
+repo_gpgcheck=0
 enabled=1
-gpgcheck=0
-
-[inmanta-deps]
-baseurl=https://packages.inmanta.com/rpms/deps/fedora/
-enabled=1
-gpgcheck=0
+enabled_metadata=1
 
 [inmanta-dash]
 baseurl=https://packages.inmanta.com/rpms/inmanta-dashboard/
