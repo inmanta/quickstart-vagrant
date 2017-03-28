@@ -6,9 +6,9 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure(2) do |config|
-  
+
   config.ssh.forward_agent = true
-  
+
   config.vm.define "vm1" do |vm1|
     vm1.vm.box = "fedora/23-cloud-base"
     #fixed IP
@@ -20,7 +20,7 @@ Vagrant.configure(2) do |config|
     # install python for the remote agent
     vm1.vm.provision "shell", inline: "dnf install -y python"
   end
-  
+
 
   config.vm.define "vm2" do |vm2|
     vm2.vm.box =  "fedora/23-cloud-base"
@@ -41,7 +41,4 @@ Vagrant.configure(2) do |config|
     # install the server
     server.vm.provision "shell", path: "server.sh"
   end
-
-
-  
 end
