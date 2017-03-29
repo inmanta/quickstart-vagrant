@@ -88,4 +88,4 @@ chown inmanta -R /var/lib/inmanta/.ssh
 
 # Install the dashboard
 mkdir -p /usr/share/inmanta/dashboard
-tar xvzf /vagrant/dist.tgz --strip-components=1 -C /usr/share/inmanta/dashboard
+curl -s -L https://github.com/inmanta/inmanta-dashboard/releases/download/v2017.1/inmanta-dashboard-2017.1.tar.gz | tar xvz  --strip-components=1 -C /usr/share/inmanta/dashboard
