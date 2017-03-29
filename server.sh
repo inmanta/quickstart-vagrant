@@ -14,7 +14,7 @@ systemctl enable mongod
 python3 -m virtualenv -p python3 /opt/inmanta
 P=/opt/inmanta/bin/python3
 $P -m pip install -U pip setuptools
-$P -m pip install git+https://github.com/inmanta/inmanta#egg=inmanta
+$P -m pip install inmanta>=2017.1
 
 #setup the server
 mkdir /etc/inmanta
