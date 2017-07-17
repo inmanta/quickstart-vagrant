@@ -18,6 +18,8 @@ Vagrant.configure(2) do |config|
     # make machine accessible to our remote agent
     vm1.vm.provision "shell", inline: "mkdir /root/.ssh"
     vm1.vm.provision "shell", inline: "cat /vagrant/vagrant-master.pub >>/root/.ssh/authorized_keys"
+    # centos no longer brings up eth1
+    vm1.vm.provision "shell", inline: "ifup eth1"
   end
 
 
@@ -28,6 +30,8 @@ Vagrant.configure(2) do |config|
     # make machine accessible to our remote agent
     vm2.vm.provision "shell", inline: "mkdir /root/.ssh"
     vm2.vm.provision "shell", inline: "cat /vagrant/vagrant-master.pub >>/root/.ssh/authorized_keys"
+    # centos no longer brings up eth1
+    vm2.vm.provision "shell", inline: "ifup eth1"
   end
 
   config.vm.define "server" do |server|
@@ -38,5 +42,7 @@ Vagrant.configure(2) do |config|
     server.vm.network :forwarded_port, guest: 8888, host: 8888
     # install the server
     server.vm.provision "shell", path: "server.sh"
+    # centos no longer brings up eth1
+    server.vm.provision "shell", inline: "ifup eth1"
   end
 end
