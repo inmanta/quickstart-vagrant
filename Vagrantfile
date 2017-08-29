@@ -16,8 +16,7 @@ Vagrant.configure(2) do |config|
     # expose drupal
     vm1.vm.network :forwarded_port, guest: 80, host: 8080
     # make machine accessible to our remote agent
-    vm1.vm.provision "shell", inline: "mkdir /root/.ssh"
-    vm1.vm.provision "shell", inline: "cat /vagrant/vagrant-master.pub >>/root/.ssh/authorized_keys"
+    vm1.vm.provision "shell", inline: "cat /vagrant/vagrant-master.pub >>/home/vagrant/.ssh/authorized_keys"
     # centos no longer brings up eth1
     vm1.vm.provision "shell", inline: "ifup eth1"
   end
@@ -28,8 +27,7 @@ Vagrant.configure(2) do |config|
     # fixed IP
     vm2.vm.network "private_network", ip: "192.168.33.102"
     # make machine accessible to our remote agent
-    vm2.vm.provision "shell", inline: "mkdir /root/.ssh"
-    vm2.vm.provision "shell", inline: "cat /vagrant/vagrant-master.pub >>/root/.ssh/authorized_keys"
+    vm2.vm.provision "shell", inline: "cat /vagrant/vagrant-master.pub >>/home/vagrant/.ssh/authorized_keys"
     # centos no longer brings up eth1
     vm2.vm.provision "shell", inline: "ifup eth1"
   end
