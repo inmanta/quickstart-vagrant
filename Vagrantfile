@@ -39,7 +39,7 @@ Vagrant.configure(2) do |config|
     # expose the dashboard
     server.vm.network :forwarded_port, guest: 8888, host: 8888
     # install the server
-    server.vm.provision "shell", path: "server.sh"
+    server.vm.provision "shell", path: "server.sh", env: {"rpm_repo" => ENV['rpm_repo']}
     # centos no longer brings up eth1
     server.vm.provision "shell", inline: "ifup eth1"
   end

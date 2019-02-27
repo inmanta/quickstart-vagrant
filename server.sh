@@ -1,12 +1,17 @@
 #!/bin/bash
 
+if [ -z "$rpm_repo" ]
+then
+  rpm_repo="stable"
+fi
+
 yum install -y epel-release
 cat > /etc/yum.repos.d/inmanta_oss_dev.repo <<EOF
-[inmanta-oss-stable]
-name=Inmanta OSS stable
-baseurl=https://pkg.inmanta.com/inmanta-oss-stable/el7/
+[inmanta-oss-$rpm_repo]
+name=Inmanta OSS $rpm_repo
+baseurl=https://pkg.inmanta.com/inmanta-oss-$rpm_repo/el7/
 gpgcheck=1
-gpgkey=https://pkg.inmanta.com/inmanta-oss-stable/inmanta-oss-stable-public-key
+gpgkey=https://pkg.inmanta.com/inmanta-oss-$rpm_repo/inmanta-oss-$rpm_repo-public-key
 repo_gpgcheck=1
 enabled=1
 enabled_metadata=1
