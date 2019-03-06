@@ -7,7 +7,10 @@ fi
 
 # Pin mirror to prevent timeouts to metadata service
 sed -i '/^mirrorlist=/s/^/#/' /etc/yum.repos.d/CentOS-Base.repo
-sed -i 's|^#baseurl=.*|baseurl=http://centos.cu.be/7.6.1810/os/x86_64/|' /etc/yum.repos.d/CentOS-Base.repo
+full_version=$(cut -d ' ' -f 4 /etc/centos-release)
+for repo_name in "os" "updates" "extras" "centosplus"; do
+   sed -i "s|^#baseurl=http://mirror.centos.org/centos/\$releasever/${repo_name}/\$basearch/|baseurl=http://centos.mirror.nucleus.be/${full_version}/${repo_name}/\$basearch/|" /etc/yum.repos.d/CentOS-Base.repo
+done
 yum clean all
 
 yum install -y epel-release
