@@ -5,6 +5,11 @@ then
   rpm_repo="stable"
 fi
 
+# Pin mirror to prevent timeouts to metadata service
+sed -i '/^mirrorlist=/s/^/#/' /etc/yum.repos.d/CentOS-Base.repo
+sed -i 's|^#baseurl=.*|baseurl=http://centos.cu.be/7.6.1810/os/x86_64/|' /etc/yum.repos.d/CentOS-Base.repo
+yum clean all
+
 yum install -y epel-release
 cat > /etc/yum.repos.d/inmanta_oss_dev.repo <<EOF
 [inmanta-oss-$rpm_repo]
