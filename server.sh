@@ -5,6 +5,10 @@ then
   rpm_repo="stable"
 fi
 
+##################################
+### Configure yum repositories ###
+##################################
+
 # Pin mirror to prevent timeouts to metadata service
 yum_repo_file="/etc/yum.repos.d/CentOS-Base.repo"
 # Comment out mirrorlist lines
@@ -30,7 +34,30 @@ enabled=1
 enabled_metadata=1
 EOF
 
-yum install -y python3-inmanta python3-inmanta-server python3-inmanta-agent mongodb-server
+########################
+### Install packages ###
+########################
+
+rpm -i https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
+yum install -y python3-inmanta python3-inmanta-server python3-inmanta-agent mongodb-server postgresql10-server
+
+########################
+### Setup PostgreSQL ###
+########################
+
+# Init PostgreSQL database
+su - postgres -c '/usr/pgsql-10/bin/initdb /var/lib/pgsql/10/data'
+
+# start PostgreSQL
+systemctl start postgresql-10
+systemctl enable postgresql-10
+
+# Create inmanta database in PostgreSQL
+su - postgres -c "psql -U postgres -c 'create database inmanta;'"
+
+####################
+## Setup MongoDB ###
+####################
 
 #optimize mongo for small db and fast start
 echo "smallfiles = true" >>/etc/mongod.conf
@@ -38,6 +65,10 @@ echo "smallfiles = true" >>/etc/mongod.conf
 #start mongo
 systemctl start mongod
 systemctl enable mongod
+
+###########################
+## Setup Inmanta server ###
+###########################
 
 # configure inmanta
 cat >> /etc/inmanta/server.cfg <<EOF
@@ -49,6 +80,10 @@ EOF
 # start inmanta server
 systemctl enable inmanta-server
 systemctl start inmanta-server
+
+#################################################################
+### Make sure that Inmanta server can login on VM1 and on VM2 ###
+#################################################################
 
 #patch up hosts, for agent autostart
 echo "192.168.33.101 vm1" >> /etc/hosts
