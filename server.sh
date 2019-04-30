@@ -71,11 +71,7 @@ systemctl enable mongod
 ###########################
 
 # configure inmanta
-cat >> /etc/inmanta/server.cfg <<EOF
-[server]
-auto-recompile-wait = 10
-agent_autostart = *
-EOF
+sed -i "s/\[server\]/\[server\]\nagent_autostart = *\n/g" /etc/inmanta/server.cfg
 
 # start inmanta server
 systemctl enable inmanta-server
