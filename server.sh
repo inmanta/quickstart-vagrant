@@ -71,7 +71,31 @@ systemctl enable mongod
 ###########################
 
 # configure inmanta
-sed -i "s/\[server\]/\[server\]\nagent_autostart = *\n/g" /etc/inmanta/server.cfg
+cat > /etc/inmanta/server.cfg <<EOF
+[config]
+# The directory where the server stores its state
+state_dir=/var/lib/inmanta
+
+# The directory where the server stores log file. Currently this is only for the output of
+# embedded agents.
+log_dir=/var/log/inmanta
+
+[server_rest_transport]
+# The port on which the server listens for connections
+port = 8888
+
+[server]
+auto-recompile-wait = 10
+agent_autostart = *
+
+[dashboard]
+# Host the dashboard from within the server. The server does not (yet) override the config.js file
+# of the dashboard. This will need to be configured manually. The dashboard will be available
+# on the server under /dashboard/
+enabled=true
+# The path where the dashboard is installed
+path=/opt/inmanta/dashboard
+EOF
 
 # start inmanta server
 systemctl enable inmanta-server
