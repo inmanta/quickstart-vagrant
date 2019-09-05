@@ -70,8 +70,14 @@ systemctl enable mongod
 ## Setup Inmanta server ###
 ###########################
 
+if [ -d "/etc/inmanta/inmanta.d" ]; then
+  inmanta_config="/etc/inmanta/inmanta.d/server.cfg"
+else
+  inmanta_config="/etc/inmanta/server.cfg"
+fi
+
 # configure inmanta
-cat > /etc/inmanta/server.cfg <<EOF
+cat > "${inmanta_config}" <<EOF
 [config]
 # The directory where the server stores its state
 state_dir=/var/lib/inmanta
