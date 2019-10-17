@@ -2,7 +2,7 @@
 
 if [ -z "$rpm_repo" ]
 then
-  rpm_repo="stable"
+  rpm_repo="dev"
 fi
 
 ##################################
@@ -13,7 +13,7 @@ fi
 yum_repo_file="/etc/yum.repos.d/CentOS-Base.repo"
 # Comment out mirrorlist lines
 sed -i '/^mirrorlist=/s/^/#/' ${yum_repo_file}
-full_centos_version=$(cut -d ' ' -f 4 /etc/centos-release)
+full_centos_version=7
 for repo_name in "os" "updates" "extras" "centosplus"; do
    old_baseurl_line="^#baseurl=http://mirror.centos.org/centos/\$releasever/${repo_name}/\$basearch/"
    new_baseurl_line="baseurl=http://centos.mirror.nucleus.be/${full_centos_version}/${repo_name}/\$basearch/"
@@ -22,7 +22,6 @@ for repo_name in "os" "updates" "extras" "centosplus"; do
 done
 yum clean all
 
-yum install -y epel-release
 cat > /etc/yum.repos.d/inmanta_oss_dev.repo <<EOF
 [inmanta-oss-$rpm_repo]
 name=Inmanta OSS $rpm_repo
@@ -34,12 +33,18 @@ enabled=1
 enabled_metadata=1
 EOF
 
+############################
+### Update to Centos 7.7 ###
+############################
+
+yum update -y
+
 ########################
 ### Install packages ###
 ########################
 
 rpm -i https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
-yum install -y python3-inmanta python3-inmanta-server python3-inmanta-agent mongodb-server postgresql10-server
+yum install -y python3-inmanta python3-inmanta-server python3-inmanta-agent postgresql10-server
 
 ########################
 ### Setup PostgreSQL ###
@@ -55,16 +60,6 @@ systemctl enable postgresql-10
 # Create inmanta database in PostgreSQL
 su - postgres -c "psql -U postgres -c 'create database inmanta;'"
 
-####################
-## Setup MongoDB ###
-####################
-
-#optimize mongo for small db and fast start
-echo "smallfiles = true" >>/etc/mongod.conf
-
-#start mongo
-systemctl start mongod
-systemctl enable mongod
 
 ###########################
 ## Setup Inmanta server ###
@@ -127,4 +122,5 @@ Host *
 EOF
 chmod 600 /var/lib/inmanta/.ssh/config
 chown inmanta -R /var/lib/inmanta/.ssh
+
 
